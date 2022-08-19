@@ -1,12 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { CurrentWeatherComponent } from './current-weather/current-weather.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing'
+import { ICurrentWeather } from './interfaces';
+
+import { WeatherServiceFake } from './weather/weather.service.fake';
+import { WeatherService } from './weather/weather.service';
 
 describe('AppComponent', () => {
+  let service: WeatherServiceFake;
+  let current: ICurrentWeather;
+  
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ HttpClientTestingModule ],
+      //imports: [ HttpClientTestingModule ],
+      providers: [{
+        provide : WeatherService,
+        useClass : WeatherServiceFake
+      }],
       declarations: [
         AppComponent,
         CurrentWeatherComponent

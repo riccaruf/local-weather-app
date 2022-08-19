@@ -3,28 +3,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { ICurrentWeather } from '../interfaces';
+import { IWeatherService } from '../interfaces';
+import { ICurrentWeatherData } from '../interfaces';
+
 import { map } from 'rxjs/operators' 
 
-interface ICurrentWeatherData{
-  weather:[{
-    description:string,
-    icon:string
-  }],
-  main:{
-    temp:number
-  },
-  sys:{
-    country:string
-  },
-  dt:number,
-  name:string
-
-}
 
 @Injectable({
   providedIn: 'root'
 })
-export class WeatherService {
+export class WeatherService implements IWeatherService {
 
   constructor(private httpClient: HttpClient) { }
 
