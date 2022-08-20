@@ -1,0 +1,36 @@
+version: 2.1
+
+# Define the jobs we want to run for this project
+jobs:
+  build:
+    docker:
+      - image: circleci/node:lts-browsers
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+      - run: npm ci
+      # force update webdriver
+      - run: cd ./node_modules/protractor && npm i webdrivermanager@latest
+      - save_cache:
+         key: v1-dependencies-{{ checksum "package-lock.json" }}
+         paths:
+           - ~/.npm
+      - run: npm run style
+      - run: npm run lint
+      - run: npm run build:prod
+      - run: npm run test:coverage -- --watch=false
+      - run: npm run e2e
+      - run: 
+          name: Tar and GZip compiled app
+          command: tar zgf dist.tar.gz dist/local-weather-app
+      - store_artifact:
+          path: dist.tar.gz
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - build
